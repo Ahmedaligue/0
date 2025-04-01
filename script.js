@@ -6,22 +6,22 @@ document.addEventListener("DOMContentLoaded", function() {
     searchButton.addEventListener("click", async function() {
         const query = searchInput.value.trim();
         if (!query) {
-            alert("Masukkan nama lagu untuk mencari!");
+            alert("❌✨ *الرجاء إدخال اسم الأغنية للبحث عنها!* ✨❌");
             return;
         }
 
         const apiURL = `https://iyaudah-iya.vercel.app/spotify/search?query=${encodeURIComponent(query)}`;
 
         try {
-            resultsContainer.innerHTML = "<p>Mencari lagu...</p>";
+            resultsContainer.innerHTML = "<p>🔎✨ *جاري البحث عن الأغنية...* ✨🔎</p>";
             const response = await fetch(apiURL);
 
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            if (!response.ok) throw new Error(`⚠️❌ *خطأ HTTP!* الحالة: ${response.status}`);
 
             const data = await response.json();
 
             if (data.length === 0) {
-                resultsContainer.innerHTML = "<p>Tidak ada hasil ditemukan.</p>";
+                resultsContainer.innerHTML = "<p>⚠️❌ *لم يتم العثور على نتائج.* ❌⚠️</p>";
                 return;
             }
 
@@ -33,14 +33,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     <img src="${track.image}" alt="${track.name}" />
                     <div>
                         <p><strong>${track.name}</strong> - ${track.artists}</p>
-                        <p>Durasi: ${track.duration}</p>
-                        <b><a href="${track.link}" target="_blank">Buka di Spotify</a></b>
+                        <p>⏱️✨ *المدة:* ${track.duration}</p>
+                        <b><a href="${track.link}" target="_blank">🌐 *عرض على سبوتيفاي*</a></b>
                         <div class="buttons">
                             <button class="play-button" onclick="playSong('${track.link}')">
-                                <i class="fas fa-play"></i> Play
+                                ▶️✨ *تشغيل*
                             </button>
-                            <button class="download-button" onclick="downloadSong('${track.link}', this)">
-                                <i class="fas fa-download"></i> Download
+                            <button class="download-button" onclick="downloadSong('${track.link}')">
+                                ⬇️✨ *تحميل*
                             </button>
                         </div>
                         <div id="spotify_player_${getSpotifyTrackId(track.link)}" style="margin-top:10px;"></div>
@@ -49,38 +49,38 @@ document.addEventListener("DOMContentLoaded", function() {
                 resultsContainer.appendChild(trackElement);
             });
         } catch (error) {
-            console.error("Error saat mencari lagu:", error);
-            resultsContainer.innerHTML = "<p>Terjadi kesalahan saat mencari lagu.</p>";
+            console.error("⚠️❌ *حدث خطأ أثناء البحث عن الأغنية:*", error);
+            resultsContainer.innerHTML = "<p>⚠️❌ *حدث خطأ أثناء البحث، الرجاء المحاولة لاحقًا.* ❌⚠️</p>";
         }
     });
 });
 
 async function downloadSong(songUrl) {
-        if (!songUrl) {
-                alert("URL lagu tidak ditemukan.");
-                return;
+    if (!songUrl) {
+        alert("❌✨ *رابط الأغنية غير متوفر.* ✨❌");
+        return;
+    }
+    
+    const downloadApi = `https://api.siputzx.my.id/api/d/spotify?url=${encodeURIComponent(songUrl)}`;
+    
+    try {
+        const response = await fetch(downloadApi);
+        
+        if (!response.ok) {
+            throw new Error(`⚠️❌ *خطأ HTTP!* الحالة: ${response.status}`);
         }
         
-        const downloadApi = `https://api.siputzx.my.id/api/d/spotify?url=${encodeURIComponent(songUrl)}`;
+        const data = await response.json();
         
-        try {
-                const response = await fetch(downloadApi);
-                
-                if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.status === true && data.download) {
-                        window.location.href = data.download;
-                } else {
-                        alert("Download gagal, coba lagi nanti.");
-                }
-        } catch (error) {
-                console.error("Error saat mengunduh lagu:", error);
-                alert("Terjadi kesalahan saat mengunduh lagu.");
+        if (data.status === true && data.download) {
+            window.location.href = data.download;
+        } else {
+            alert("⚠️❌ *فشل في التحميل، الرجاء المحاولة لاحقًا.* ❌⚠️");
         }
+    } catch (error) {
+        console.error("⚠️❌ *حدث خطأ أثناء تحميل الأغنية:*", error);
+        alert("⚠️❌ *حدث خطأ أثناء التحميل، الرجاء المحاولة لاحقًا.* ❌⚠️");
+    }
 }
 
 function playSong(songUrl) {
@@ -88,7 +88,7 @@ function playSong(songUrl) {
     const playerContainer = document.getElementById(`spotify_player_${trackId}`);
 
     if (!playerContainer) {
-        console.error("Player container tidak ditemukan.");
+        console.error("⚠️❌ *تعذر العثور على حاوية المشغل.* ❌⚠️");
         return;
     }
 
@@ -102,6 +102,6 @@ function playSong(songUrl) {
 }
 
 function getSpotifyTrackId(url) {
-    const match = url.match(/track\/([a-zA-Z0-9]+)/);
+  const match = url.match(/track\/([a-zA-Z0-9]+)/);
     return match ? match[1] : "";
 }
